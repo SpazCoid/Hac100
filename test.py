@@ -1,19 +1,15 @@
+import sqlite3
+conn=sqlite3.connect("News.db")
+ 
+conn.execute('''Create Table IF NOT EXISTS News
+             (Title                     TEXT NOT NULL,
+              Description               TEXT (50)            NOT NULL,
+              URL                       TEXT (50)           NOT NULL,
+              PublishedAt               TEXT (15)           NOT NULL,
+              Content                   TEXT (500)           NOT NULL,
+              UNIQUE(Title, PublishedAt),
+              PRIMARY KEY (Title)
+              );''')
 
-import ctypes
-from tkinter import *
-from tkinter import Tk
-
-def Root():
-    global root
-    root = Tk()
-    
-    user32 = ctypes.windll.user32
-    width  = user32.GetSystemMetrics(0)
-    height = user32.GetSystemMetrics(1)
-
-
-
-    root.geometry(f'{width}x{height}')
-    root.mainloop()
-
-Root()
+conn.commit()
+conn.close()
