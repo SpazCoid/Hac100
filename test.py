@@ -59,7 +59,6 @@ def Login():
     
     if key == PWDvar.get():
         main()
-    if key != PWDvar.get():
 
 
 Root()
