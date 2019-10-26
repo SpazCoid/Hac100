@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import Tk
 import hashlib
+import sqlite3
 
 
 def Root():
