@@ -51,7 +51,7 @@ def StartUp():
     b3 = Button(frameButtonS,height=5, width=16 ,background="#7f82ff" ,text = "Quit", command=lambda: [quit()]).grid(row=5,column=0)
 
 def AccCreation():
-
+    global User_NAMEvar, User_PASSvar, User_ADDRvar, User_POSTCvar, User_PHONUMvar
 #---Account Creation Frame
     frameAccCreate = Frame(root)
     frameAccCreate.pack()
@@ -97,8 +97,26 @@ def AccCreation():
     frameButtonAC.configure(background="#cdfbff")
 
     #---ADD ACCOUNT TO DATABASE
-    b1 = Button(frameButtonAC, height=5, width=16,background="#7f82ff" ,text = "Create Account", command=lambda: [Login(), frameStart.destroy(), frameButtonS.destroy()]).grid(row=1,column=0)
+    b1 = Button(frameButtonAC, height=5, width=16,background="#7f82ff" ,text = "Create Account", command=lambda: [AddNewAcc(), frameAccDet.destroy(), frameButtonAC.destroy()]).grid(row=1,column=0)
  
+def AddNewAcc():
+    user = User_NAMEvar.get()
+    pwd = User_PASSvar.get()
+    addr = User_ADDRvar.get()
+    postc = User_POSTCvar.get()
+    phonum = User_PHONUMvar.get()
+
+    user_hash = hashlib.sha256(str(user).encode()).hexdigest()
+    user_id = user_hash[:8]
+    user_pwd = hashlib.sha256(str(pwd).encode()).hexdigest()
+
+    conn = sqlite3.connect("UserDB.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO Users VALUES (?,?,?,?,?,?)", (user_id,user,user_pwd,addr,postc,phonum))
+    conn.commit()
+    conn.close()
+    Login()
+
 
 def Login():
     global User_NAMEvar, User_PASSvar, frameLogin, frameLoginButtons
@@ -143,8 +161,9 @@ def LoginCheck():
 
 #---GRAB DETAILS FROM THE DATABASE
     conn = sqlite3.connect("UserDB.db")
-    c = conn.cursor()
-    c.execute("SELECT userpass FROM Users WHERE username=?", (user))
+    cursor = conn.cursor()
+    cursor.execute("SELECT userpass FROM Users WHERE username=?", (user))
+
 
 #---PASSWORD IS HASHED SO IT CAN BE COMPARED TO ONE IN DATABASE
     key = hashlib.sha256(str(pwd).encode()).hexdigest()
