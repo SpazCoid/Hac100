@@ -130,7 +130,7 @@ def AddNewAcc():
     Login()
 
 def AccountAccessMain():
-    
+
     LoggedIn = user_LoggedInvar
     LogVar = ("Currently Logged in as:", LoggedIn)
 #---CREATING ACCOUNT ACCESS FRAME
@@ -164,7 +164,12 @@ def AccountAccessMain():
     buttn3 = Button(frameButtonAS,height=5, width=16 ,background="#7f82ff" ,text = "Log Out", command=lambda: [StartUp(), frameAccMenu.destroy(), frameButtonAS.destroy()]).grid(row=5,column=0)
 
 def MedMenu():
-    
+
+#---CREATING ACCOUNT ACCESS FRAME
+    frameMedMenu = Frame(root)
+    frameMedMenu.pack()
+    frameMedMenu.configure(background="#cdfbff")
+    Label(frameMedMenu, text="User Medication Menu",font=("Helvetica 35 bold") , background = "#cdfbff").grid(row=1,column=0, sticky=NSEW)
 
 
 def Login():
