@@ -5,7 +5,7 @@ def test():
     cursor = conn.cursor()
 
     cursor.execute('''CREATE TABLE if NOT EXISTS Users
-        ([UserID]  VARCHAR(8)   NOT NULL,[Username] VARCHAR(20) NOT NULL,[UserPass]    VARCHAR(64) NOT NULL,[Address] VARCHAR(64) NOT NULL,[Postcode] VARCHAR(8) NOT NULL,[PhoneNum] INT(11) NOT NULL,[NotifMed] BOOLEAN(1) NOT NULL,[NotifNews] BOOLEAN(1) NOT NULL, PRIMARY KEY(UserID))''')
+        ([UserID]  VARCHAR(8)   NOT NULL,[Username] VARCHAR(20) NOT NULL,[UserPass]    VARCHAR(64) NOT NULL,[Address] VARCHAR(64) NOT NULL,[Postcode] VARCHAR(8) NOT NULL,[PhoneNum] VARCHAR(11) NOT NULL,[NotifMed] BOOLEAN(1) NOT NULL,[NotifNews] BOOLEAN(1) NOT NULL, PRIMARY KEY(UserID))''')
     cursor.execute('''CREATE TABLE if NOT EXISTS Medication
         ([MedID] VARCHAR(8) NOT NULL,[MedicationName] VARCHAR(20) NOT NULL,[MedicationDesc] VARCHAR(64) NOT NULL,[MedicationDose] VARCHAR(20) NOT NULL, PRIMARY KEY(MedID) )''')
     

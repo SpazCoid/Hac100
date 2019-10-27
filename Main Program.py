@@ -9,30 +9,49 @@ import datetime
 from clockwork import clockwork
 api = clockwork.API("366aec027c364b3314327812f33da2557d51a731")
 
-def Timer():
-    now=datetime.datetime.now().replace(microsecond=0)
-    SpecifiedTime=now.replace(hour=00,minute=10,second=0,microsecond=0)
-    if (now == SpecifiedTime):
+def NewTimer():
+    conn=sqlite3.connect("UserDB.db")
+    cur = conn.cursor()
+    cur.execute("SELECT Users.PhoneNum, Link.TimeMedHour, Link.TimeMedMin , Medication.MedicationName FROM Users,Link,Medication WHERE NotifMed = ? AND Users.UserID = Link.UserID AND Medication.MedID = Link.MedID", [1])
+    data=cur.fetchall()
+    datalen=len(data)
+    j=0
+    for j in range(datalen):
+        now=datetime.datetime.now().replace(microsecond=0)
+        PHONENUMBER=data[j][0]
+        HOUR=data[j][1]
+        MIN=data[j][2]
+        MED=data[j][3]
+        SpecifiedTime=now.replace(hour=int(HOUR),minute=int(MIN),second=0,microsecond=0)
+        if(now == SpecifiedTime):
+            reminder = str("Its Time to take your medication of " + MED)
+            message = clockwork.SMS(to=PHONENUMBER, message = reminder)
+            response = api.send(message)
 
-        message = clockwork.SMS ( to = "07533777040", message = "test")
-        response = api.send(message)
-
-        if response.success:
-            print (response.id)
-        else:
-            print (response.error_code)
-            print (response.error_description)
+            if response.success:
+                print ("responseID" + response.id)
+            else:
+                print ("responseErrorCODE" + response.error_code)
+            print(reminder)
+    cur.close()
 
             
 def NewsSMS():
-    conn=sqlite3.connect("News.db")
+    conn=sqlite3.connect("UserDB.db")
     cur = conn.cursor()
-    cur.execute("SELECT Title, URL FROM News WHERE Sent = ?", [0])
+    cur.execute("SELECT Title FROM News WHERE Sent = ?", [0])
     data=cur.fetchone()
-
-    print(data)
-
+    cur.execute("SELECT PhoneNum FROM Users WHERE NotifNews = ?", [1])
+    phn=cur.fetchall()
+    phnlen = len(phn)
+    print(phn)
     
+    for j in range(phnlen):
+        print("Sending MSG TO: " + phn[j] + ", " + data[len(data)-1])
+        data[len(data)-1].delete()
+    cur.execute('''UPDATE News SET Sent = ? WHERE Title = ?''',(1,data[len(data)-1]))
+
+    '''
     message = clockwork.SMS ( to = "07441906544", message = data[len(data)-1])
     response = api.send(message)
 
@@ -41,7 +60,7 @@ def NewsSMS():
         data[len(data)-1].delete()
     else:
         print (response.error_code)
-
+'''
 
 def NewsSearch():
     url = ('https://newsapi.org/v2/top-headlines?'
@@ -63,7 +82,7 @@ def NewsSearch():
             publishedAt = jsonList[i]['publishedAt']
             Content = jsonList[i]['content']
 
-            conn=sqlite3.connect("News.db")
+            conn=sqlite3.connect("UserDB.db")
             cur = conn.cursor()
             for Title in (jsonList):
                 cur.execute("SELECT count (*) FROM News WHERE Title = ?", [jsonList[i]['title']])
@@ -93,16 +112,16 @@ def clock():
     ten=0
     five = 0
     while True:
-        Timer()
+        NewTimer()
         time.sleep(1)
         ten=ten+1
         five=five+1
         print(ten)
         if (ten == 30):
-            NewsSearch()
+            #NewsSearch()
             ten = 0
         if (five == 15):
-            NewsSMS()
+            #NewsSMS()
             five = 0
 
 
