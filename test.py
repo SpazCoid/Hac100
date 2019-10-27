@@ -163,6 +163,10 @@ def AccountAccessMain():
     #---BUTTON TO REDIRECT USER TO ACCOUNT CREATION
     buttn3 = Button(frameButtonAS,height=5, width=16 ,background="#7f82ff" ,text = "Log Out", command=lambda: [StartUp(), frameAccMenu.destroy(), frameButtonAS.destroy()]).grid(row=5,column=0)
 
+def MedMenu():
+    
+
+
 def Login():
     global User_NAMEvar, User_PASSvar, frameLogin, frameButtonL
 
@@ -213,29 +217,17 @@ def LoginCheck():
 #---GRAB DETAILS FROM THE DATABASE
     conn = sqlite3.connect("UserDB.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT count(*) FROM Users where Username=(?)", (user,))
-    records=cursor.fetchone()
+    cursor.execute("SELECT UserID, Username, UserPass FROM Users where Username=(?)", (user,))
+    records = cursor.fetchall()
 
-    if records == 0:
-        messagebox.showerror("Error", "Username / Password is incorrect")
-    if records == 1:
-        for record in records:
-            if user == record[0]:
-                conn = sqlite3.connect("UserDB.db")
-                cursor = conn.cursor()
-                cursor.execute("SELECT UserID, Username, UserPass FROM Users where Username=(?)", (user,))
-                records.fetchall()
-
-                for record in records:
-                    if key == record[2]:
-                        userID = record[0]
-                        user_LoggedInvar = user
-                        print(userID)
-                        print(user_LoggedInvar)
-                        frameLogin.destroy(), frameButtonL.destroy(); AccountAccessMain()
-                    if key != record[2]:
-                        messagebox.showerror("Error", "Username / Password is incorrect")
-                    else:
-                        messagebox.showerror("Error", "Username / Password is incorrect")
+    for record in records:
+        if key == record[2]:
+            userID = record[0]
+            user_LoggedInvar = user
+            print(userID)
+            print(user_LoggedInvar)
+            frameLogin.destroy(), frameButtonL.destroy(); AccountAccessMain()
+        else:
+            messagebox.showerror("Error", "Username / Password is incorrect")
 
 Root()
