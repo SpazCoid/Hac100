@@ -41,6 +41,10 @@ def test():
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user2','DRUG0001','08','59' ,'12'))
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user2','DRUG0002','09','02' ,'43'))
 
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0001','11','11' ,'4'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0002','11','12' ,'0'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0001','08','59' ,'12'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0002','09','02' ,'43'))
     conn.commit()
     conn.close()
 

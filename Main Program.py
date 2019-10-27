@@ -9,7 +9,6 @@ import datetime
 from clockwork import clockwork
 api = clockwork.API("366aec027c364b3314327812f33da2557d51a731")
 
-<<<<<<< HEAD
 def Timer():
     now=datetime.datetime.now().replace(microsecond=0)
     SpecifiedTime=now.replace(hour=00,minute=10,second=0,microsecond=0)
@@ -23,7 +22,6 @@ def Timer():
         else:
             print (response.error_code)
             print (response.error_description)
-=======
 def NewTimer():#Sends SMS related to Perscription
     conn=sqlite3.connect("UserDB.db")
     cur = conn.cursor()
@@ -84,7 +82,6 @@ def NewTimer():#Sends SMS related to Perscription
                 else:
                     print("responseErrorCODE" + response.error_code)
     cur.close()
->>>>>>> 9d72c8b7824236a1be942fb15c088aa26396e8e3
 
             
 def NewsSMS():
@@ -110,16 +107,39 @@ def NewNewsSMS():
     cur = conn.cursor()
     cur.execute("SELECT PhoneNum FROM Users WHERE NotifMed = ?", [1])
     phn =cur.fetchall()
-    cur.execute("SELECT Title, URL, Sent FROM News WHERE Sent = ")
-    
+    cur.execute("SELECT Title, URL, Sent FROM News WHERE Sent = ?",[0])
+    nws = cur.fetchall()
+    phnlen=len(phn)
+    nwslen=len(nws)
+    j=0
+    l=0
+    #iterate through the array of phonenumbers from the database that have opped into the service
+    for j in range(phnlen):
+        for l in range(nwslen):
+            PHONENUMBER = phn[j][0]
+            TITLE = nws[l][0]
+            URL = nws[l][1]
+            BODY = str(TITLE + " / " + URL)
+            message = clockwork.SMS(to = PHONENUMBER , message = TITLE)
+            response = api.send(message)
+            if response.success:
+                print ("responseID" + response.id)
+                cur.execute("UPDATE News SET Sent = ? WHERE URL = ?",("1",URL))
+                print("Sent")
+
+            else:
+                print("responseErrorCODE" + response.error_code)
+            conn.commit()
+    cur.close()
 
 def NewsSearch():
     url = ('https://newsapi.org/v2/top-headlines?'
         
-       
-       'q=Drugs&'
+       'category = general&'
+       'q=Manchester&'
        'apiKey=009afc89be70404a83dc7b99067d3812')
     NewsReturns = requests.get(url).json()
+    print(NewsReturns)
     json_status = NewsReturns['status']
     jsonList = NewsReturns['articles']
     ListLen = len(jsonList)
@@ -155,7 +175,7 @@ def NewsSearch():
             
             
             
-            
+           
         
     return
 
@@ -172,7 +192,11 @@ def clock():
             NewsSearch()
             ten = 0
         if (five == 15):
+<<<<<<< HEAD
             NewsSMS()
+=======
+            NewNewsSMS()
+>>>>>>> b8827fb5a4f2722599e6f3b593d0d8f1a656b568
             five = 0
 
 
