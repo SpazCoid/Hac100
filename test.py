@@ -120,7 +120,10 @@ def AddNewAcc():
 
     user_hash = hashlib.sha256(str(user).encode()).hexdigest()
     user_id = user_hash[:8]
-    user_pwd = hashlib.sha256(str(pwd).encode()).hexdigest()
+    user_pwd = hashlib.sha256(str(p
+
+#---CREATING ACCOUNT ACCESS FRAME
+    user = user_LoggedInvar.get()wd).encode()).hexdigest()
 
     conn = sqlite3.connect("UserDB.db")
     cursor = conn.cursor()
@@ -149,7 +152,7 @@ def AccountAccessMain():
     frameButtonAS.configure(background="#cdfbff")
 
     #---BUTTON TO REDIRECT USER TO MEDICATION ENTRY SCREEN
-    buttn1 = Button(frameButtonAS, height=5, width=16,background="#7f82ff" ,text = "Medication Menu", command=lambda: [MedMenu(), frameAccMenu.destroy(), frameButtonAS.destroy()]).grid(row=1,column=0)
+    buttn1 = Button(frameButtonAS, height=5, width=16,background="#7f82ff" ,text = "Medication Menu", command=lambda: [frameAccMenu.destroy(), frameButtonAS.destroy(), MedMenu()]).grid(row=1,column=0)
  
     #---SPACE
     Label(frameButtonAS, text="\t\t", background="#cdfbff").grid(row=2,column=0,sticky=NSEW)   
@@ -164,12 +167,42 @@ def AccountAccessMain():
     buttn3 = Button(frameButtonAS,height=5, width=16 ,background="#7f82ff" ,text = "Log Out", command=lambda: [StartUp(), frameAccMenu.destroy(), frameButtonAS.destroy()]).grid(row=5,column=0)
 
 def MedMenu():
-
-#---CREATING ACCOUNT ACCESS FRAME
     frameMedMenu = Frame(root)
     frameMedMenu.pack()
     frameMedMenu.configure(background="#cdfbff")
     Label(frameMedMenu, text="User Medication Menu",font=("Helvetica 35 bold") , background = "#cdfbff").grid(row=1,column=0, sticky=NSEW)
+
+#---SPACE
+    Label(frameMedMenu, text="\t\t\t\t", background="#cdfbff").grid(row=2,column=0)
+
+#---DATA ENTRY
+    #---MEDICATION ID ENTRY
+    Label(frameMedMenu, text = "Medication ID", font=("Helvetica 15 bold"), background="#cdfbff").grid(row=3, column=0)
+    MedIDvar = StringVar()
+    MedID = Entry(frameMedMenu, textvariable=MedIDvar).grid(row=3,column=1)
+
+    #---MEDICATION NAME ENTRY
+    Label(frameMedMenu, text = "Medication Name", font=("Helvetica 15 bold"), background="#cdfbff").grid(row=4, column=0)
+    MedNamevar = StringVar()
+    MedName = Entry(frameMedMenu, textvariable=MedNamevar).grid(row=4,column=1)
+
+    #---MEDICATION DESCRIPTION ENTRY
+    Label(frameMedMenu, text = "Medication Description", font=("Helvetica 15 bold"), background="#cdfbff").grid(row=5, column=0)
+    MedDescvar = StringVar()
+    MedDesc = Entry(frameMedMenu, textvariable=MedDescvar).grid(row=5,column=1)
+
+    #---MEDICATION DOSE ENTRY
+    Label(frameMedMenu, text = "Medication Dose", font=("Helvetica 15 bold"), background="#cdfbff").grid(row=6, column=0)
+    MedDosevar = StringVar()
+    MedDose = Entry(frameMedMenu, textvariable=MedDosevar).grid(row=6,column=1)
+
+    conn = sqlite3.connect("UserDB.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT MedID, MedicationName, MedicationDesc, MedicationDose FROM Medication where =(?)", (user,))
+    records = cursor.fetchall()
+    
+       listbox1.insert(i,"Medication ID = ", record[0] , "Medication Name = ", record[1] , "Medication Description = ", record[2] , "Medication Dose = ", record[3])
+       listbox1.insert(i,"----------------------------------------------------------", "\n\n")
 
 
 def Login():
