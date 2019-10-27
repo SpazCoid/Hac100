@@ -8,6 +8,7 @@ conn.execute('''Create Table IF NOT EXISTS News
               URL                       TEXT (50)           NOT NULL,
               publishedAt               TEXT (15)           NOT NULL,
               Content                   TEXT (500)           NOT NULL,
+              Sent                      Boolean(1)           NOT NULL,
               PRIMARY KEY (Title)
               UNIQUE(Title,URL)
               );''')
