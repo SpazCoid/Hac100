@@ -30,24 +30,8 @@ def test():
     #cursor.execute("INSERT OR IGNORE INTO Users Values (?,?,?,?,?,?,?,?)" , ('Test5678','TestAccount5678','1a77bb65d1d544957d895bde9602a4a42712a33335ae897a712d068fef6fb9a8','TestAddress567', 'TestPostcode567', "07421749700", '1' , '1' ))
     cursor.execute("INSERT OR IGNORE INTO Medication Values (?,?,?,?)" , ('DRUG0001','Paracetamol','Painkiller','500' ))
     cursor.execute("INSERT OR IGNORE INTO Medication Values (?,?,?,?)" , ('DRUG0002','Asprin','Painkiller','250' ))
-<<<<<<< HEAD
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0001','11','27' ,'4'))
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0002','11','28' ,'0'))
-=======
-
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user1','DRUG0001','09','00' ))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user1','DRUG0002','09','01' ))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user2','DRUG0001','08','59' ))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user2','DRUG0002','09','02' ))
-
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user1','DRUG0001','10','17' ,'4'))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user1','DRUG0002','10','18' ,'0'))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user2','DRUG0001','08','59' ,'12'))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user2','DRUG0002','09','02' ,'43'))
-
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0001','11','11' ,'4'))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0002','11','12' ,'0'))
->>>>>>> 24b6e3202a7c8f1f70a7fbe88373066971a31141
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0001','08','59' ,'12'))
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0002','09','02' ,'43'))
     conn.commit()
