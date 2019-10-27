@@ -149,28 +149,36 @@ def Login():
     Label(frameLogin, text="\t\t", background="#cdfbff").grid(row=5,column=0, )
     
     #7f82ff - Colour for buttons
-    b1 = Button(frameButtonL,text="Login",background="#7f82ff").grid(row=1,column=0)
+    b1 = Button(frameButtonL,text="Login",background="#7f82ff", command=lambda: [LoginCheck(), frameLogin.destroy(), frameButtonL.destroy()]).grid(row=1,column=0)
     Label(frameButtonL, text="      ", background="#cdfbff").grid(row=1,column=1)
     b2 = Button(frameButtonL,text="Cancel", background="#7f82ff", command=lambda: [StartUp(), frameLogin.destroy(), frameButtonL.destroy()]).grid(row=1,column=2)
-
+    
 def LoginCheck():
-    global User_IDvar 
 #---GRABS USER AND PASSWORD VARIABLES FROM INPUT BOX
     user = User_NAMEvar.get()
     pwd = User_PASSvar.get()
 
-#---GRAB DETAILS FROM THE DATABASE
-    conn = sqlite3.connect("UserDB.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT userpass FROM Users WHERE username=?", (user))
-
+    print(user)
+    print(pwd)
 
 #---PASSWORD IS HASHED SO IT CAN BE COMPARED TO ONE IN DATABASE
     key = hashlib.sha256(str(pwd).encode()).hexdigest()
-    
-    if key == PWDvar.get():
 
-        main()
+#---GRAB DETAILS FROM THE DATABASE
+    conn = sqlite3.connect("UserDB.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT UserID, Username, UserPass FROM Users")
 
+    records=cursor.fetchall()
+
+    for record in records:
+        if user == record[1] and key == record[2]:
+            Root()
+            frameLogin.destroy()
+            frameButtonL.destroy()
+            break
+        else:
+            messagebox.showerror("Error", "Username / Password is incorrect")
+        
 
 Root()
