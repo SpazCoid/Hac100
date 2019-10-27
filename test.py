@@ -121,9 +121,8 @@ def AddNewAcc():
     user_hash = hashlib.sha256(str(user).encode()).hexdigest()
     user_id = user_hash[:8]
     user_pwd = hashlib.sha256(str(pwd).encode()).hexdigest()
-
+    
 #---CREATING ACCOUNT ACCESS FRAME
-    user = user_LoggedInvar.get(pwd).encode().hexdigest()
 
     conn = sqlite3.connect("UserDB.db")
     cursor = conn.cursor()
@@ -134,7 +133,7 @@ def AddNewAcc():
 
 def AccountAccessMain():
     user = userID
-    LoggedIn = user_LoggedInvar
+    LoggedIn = user_LoggedINvar
     LogVar = ("Currently Logged in as:", LoggedIn)
 #---CREATING ACCOUNT ACCESS FRAME
     frameAccMenu = Frame(root)
@@ -196,6 +195,7 @@ def MedMenu():
     Label(frameMedMenu, text = "Medication Dose", font=("Helvetica 15 bold"), background="#cdfbff").grid(row=6, column=0)
     MedDosevar = StringVar()
     MedDose = Entry(frameMedMenu, textvariable=MedDosevar).grid(row=6,column=1)
+
     
     i = 1
     conn=sqlite3.connect("UserDB.db")
@@ -248,7 +248,7 @@ def Login():
     buttn2 = Button(frameButtonL,text="Cancel", background="#7f82ff", command=lambda: [StartUp(), frameLogin.destroy(), frameButtonL.destroy()]).grid(row=1,column=2)
     
 def LoginCheck():
-    global userID, user_LoggedInvar, frameLogin, frameButtonL
+    global userID, user_LoggedINvar, frameLogin, frameButtonL
 #---GRABS USER AND PASSWORD VARIABLES FROM INPUT BOX
     user = User_NAMEvar.get()
     pwd = User_PASSvar.get()
@@ -268,10 +268,10 @@ def LoginCheck():
     for record in records:
         if key == record[2]:
             userID = record[0]
-            MedIDvar = record[0]
-            user_LoggedInvar = user
+            user_LoggedINvar = user
+            var = user_LoggedINvar
             print(userID)
-            print(user_LoggedInvar)
+            print(user_LoggedINvar)
             frameLogin.destroy(), frameButtonL.destroy(); AccountAccessMain()
         else:
             messagebox.showerror("Error", "Username / Password is incorrect")
