@@ -27,19 +27,36 @@ def NewTimer():
         SpecifiedTime=now.replace(hour=int(HOUR),minute=int(MIN),second=0,microsecond=0)
         NewAmountLeft=0
         if(now == SpecifiedTime):
-            NewAmountLeft= AmountLeft-1
-            reminder = str("Its Time to take your medication of " + MED + ". You now have " + str(NewAmountLeft) + " Medication Left.")
-            message = clockwork.SMS(to=PHONENUMBER, message = reminder)
-            response = api.send(message)
+            if(AmountLeft>0):
+                NewAmountLeft= AmountLeft-1
+                if(AmountLeft>0 and AmountLeft <= 5): 
+                    reminder = str("Its Time to take your medication of " + MED + ". You now have " + str(NewAmountLeft) + " Medication Left. This Means you need to top up ASAP before they run out.")
+                if(AmountLeft>5):
+                    reminder = str("Its Time to take your medication of " + MED + ". You now have " + str(NewAmountLeft) + " Medication Left.")
 
-            if response.success:
-                print ("responseID" + response.id)
-                print("Amount left before taking pill " + str(AmountLeft))
-                cur.execute("UPDATE Link SET AmountLeft = ? WHERE ClientID = ?, TimeMedHour = ?,TimeMedMin = ?",[UserID,HOUR,MIN])
-                print("New amount of pills left " + str(NewAmountLeft))
+                message = clockwork.SMS(to=PHONENUMBER, message = reminder)
+                response = api.send(message)
+
+                if response.success:
+                    print ("responseID" + response.id)
+                    print("Amount left before taking pill " + str(AmountLeft))
+                    cur.execute("UPDATE Link SET AmountLeft = ? WHERE UserID = ? AND TimeMedHour = ? AND TimeMedMin = ?",(NewAmountLeft,UserID,HOUR,MIN))
+                    
+                    print("New amount of pills left " + str(NewAmountLeft))
+                else:
+                    
+                    print("responseErrorCODE" + response.error_code)
+                conn.commit()
+                
             else:
-                print ("responseErrorCODE" + response.error_code)
-            print(reminder)
+                message = clockwork.SMS(to=PHONENUMBER, message = "WARNING! THERE IS NO MORE OF YOUR MEDICATION " + MED )
+                response = api.send(message)
+
+                if response.success:
+                    print ("responseID" + response.id)
+                    print(AmountLeft)
+                else:
+                    print("responseErrorCODE" + response.error_code)
     cur.close()
 
             
