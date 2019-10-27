@@ -12,7 +12,7 @@ api = clockwork.API("366aec027c364b3314327812f33da2557d51a731")
 def NewTimer():
     conn=sqlite3.connect("UserDB.db")
     cur = conn.cursor()
-    cur.execute("SELECT Users.PhoneNum, Link.TimeMedHour, Link.TimeMedMin , Medication.MedicationName FROM Users,Link,Medication WHERE NotifMed = ? AND Users.UserID = Link.UserID AND Medication.MedID = Link.MedID", [1])
+    cur.execute("SELECT Users.PhoneNum, Link.TimeMedHour, Link.TimeMedMin , Medication.MedicationName , Link.AmountLeft,Link.UserID FROM Users,Link,Medication WHERE NotifMed = ? AND Users.UserID = Link.UserID AND Medication.MedID = Link.MedID", [1])
     data=cur.fetchall()
     datalen=len(data)
     j=0
@@ -22,14 +22,21 @@ def NewTimer():
         HOUR=data[j][1]
         MIN=data[j][2]
         MED=data[j][3]
+        AmountLeft=data[j][4]
+        UserID=data[j][5]
         SpecifiedTime=now.replace(hour=int(HOUR),minute=int(MIN),second=0,microsecond=0)
+        NewAmountLeft=0
         if(now == SpecifiedTime):
-            reminder = str("Its Time to take your medication of " + MED)
+            NewAmountLeft= AmountLeft-1
+            reminder = str("Its Time to take your medication of " + MED + ". You now have " + str(NewAmountLeft) + " Medication Left.")
             message = clockwork.SMS(to=PHONENUMBER, message = reminder)
             response = api.send(message)
 
             if response.success:
                 print ("responseID" + response.id)
+                print("Amount left before taking pill " + str(AmountLeft))
+                cur.execute("UPDATE Link SET AmountLeft = ? WHERE ClientID = ?, TimeMedHour = ?,TimeMedMin = ?",[UserID,HOUR,MIN])
+                print("New amount of pills left " + str(NewAmountLeft))
             else:
                 print ("responseErrorCODE" + response.error_code)
             print(reminder)
@@ -51,7 +58,7 @@ def NewsSMS():
         data[len(data)-1].delete()
     cur.execute('''UPDATE News SET Sent = ? WHERE Title = ?''',(1,data[len(data)-1]))
 
-    '''
+    
     message = clockwork.SMS ( to = "07441906544", message = data[len(data)-1])
     response = api.send(message)
 
@@ -60,7 +67,12 @@ def NewsSMS():
         data[len(data)-1].delete()
     else:
         print (response.error_code)
-'''
+
+def NewNewsSMS():
+    conn=sqlite3.connect("UserDB.db")
+    cur = conn.cursor()
+    cur.execute("SELECT Users.PhoneNum,")
+    
 
 def NewsSearch():
     url = ('https://newsapi.org/v2/top-headlines?'

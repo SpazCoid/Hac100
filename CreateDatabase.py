@@ -10,7 +10,7 @@ def test():
         ([MedID] VARCHAR(8) NOT NULL,[MedicationName] VARCHAR(20) NOT NULL,[MedicationDesc] VARCHAR(64) NOT NULL,[MedicationDose] VARCHAR(20) NOT NULL, PRIMARY KEY(MedID) )''')
     
     cursor.execute('''CREATE TABLE if NOT EXISTS Link
-        ([UserID] VARCHAR(8) NOT NULL,[MedID] VARCHAR(8) NOT NULL,[TimeMedHour] VARCHAR(2) NOT NULL,[TimeMedMin] VARCHAR(2) NOT NULL, FOREIGN KEY(UserID) REFERENCES Users(UserID), FOREIGN KEY(MedID) REFERENCES Medication(MedID) )''')
+        ([UserID] VARCHAR(8) NOT NULL,[MedID] VARCHAR(8) NOT NULL,[TimeMedHour] VARCHAR(2) NOT NULL,[TimeMedMin] VARCHAR(2) NOT NULL,[AmountLeft] INT(5), FOREIGN KEY(UserID) REFERENCES Users(UserID), FOREIGN KEY(MedID) REFERENCES Medication(MedID) )''')
     
 
     conn.execute('''Create Table IF NOT EXISTS News
@@ -30,10 +30,10 @@ def test():
     cursor.execute("INSERT OR IGNORE INTO Users Values (?,?,?,?,?,?,?,?)" , ('Test5678','TestAccount5678','TestPassword456','TestAddress567', 'TestPostcode567', "07421749700", '1' , '1' ))
     cursor.execute("INSERT OR IGNORE INTO Medication Values (?,?,?,?)" , ('DRUG0001','WEED','Its Weed dummy','500' ))
     cursor.execute("INSERT OR IGNORE INTO Medication Values (?,?,?,?)" , ('DRUG0002','Asprin','Painkiller','250' ))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('Test1234','DRUG0001','09','00' ))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('Test1234','DRUG0002','09','01' ))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('Test5678','DRUG0001','08','59' ))
-    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('Test5678','DRUG0002','09','02' ))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0001','09','38' ,'29'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0002','09','01' ,'67'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0001','08','59' ,'12'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0002','09','02' ,'43'))
     conn.commit()
     conn.close()
 
