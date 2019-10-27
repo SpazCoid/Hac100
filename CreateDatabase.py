@@ -5,12 +5,12 @@ def test():
     cursor = conn.cursor()
 
     cursor.execute('''CREATE TABLE if NOT EXISTS Users
-        ([UserID]  VARCHAR(8)   NOT NULL,[Username] VARCHAR(20) NOT NULL,[UserPass]    VARCHAR(64) NOT NULL,[Address] VARCHAR(64) NOT NULL,[Postcode] VARCHAR(8) NOT NULL,[PhoneNum] VARCHAR(11) NOT NULL,[NotifMed] BOOLEAN(1) NOT NULL,[NotifNews] BOOLEAN(1) NOT NULL, PRIMARY KEY(UserID))''')
+        ([UserID]  VARCHAR(8)   NOT NULL,[Username] VARCHAR(20) NOT NULL,[UserPass]    VARCHAR(64) NOT NULL,[Address] VARCHAR(64) NOT NULL,[Postcode] VARCHAR(8) NOT NULL,[PhoneNum] INT(11) NOT NULL,[NotifMed] BOOLEAN(1) NOT NULL,[NotifNews] BOOLEAN(1) NOT NULL, PRIMARY KEY(UserID))''')
     cursor.execute('''CREATE TABLE if NOT EXISTS Medication
         ([MedID] VARCHAR(8) NOT NULL,[MedicationName] VARCHAR(20) NOT NULL,[MedicationDesc] VARCHAR(64) NOT NULL,[MedicationDose] VARCHAR(20) NOT NULL, PRIMARY KEY(MedID) )''')
     
     cursor.execute('''CREATE TABLE if NOT EXISTS Link
-        ([UserID] VARCHAR(8) NOT NULL,[MedID] VARCHAR(8) NOT NULL,[TimeMedHour] VARCHAR(2) NOT NULL,[TimeMedMin] VARCHAR(2) NOT NULL,[AmountLeft] INT(5), FOREIGN KEY(UserID) REFERENCES Users(UserID), FOREIGN KEY(MedID) REFERENCES Medication(MedID) )''')
+        ([UserID] VARCHAR(8) NOT NULL,[MedID] VARCHAR(8) NOT NULL,[TimeMedHour] VARCHAR(2) NOT NULL,[TimeMedMin] VARCHAR(2) NOT NULL, FOREIGN KEY(UserID) REFERENCES Users(UserID), FOREIGN KEY(MedID) REFERENCES Medication(MedID) )''')
     
 
     conn.execute('''Create Table IF NOT EXISTS News
@@ -26,12 +26,28 @@ def test():
 
 
 
-    cursor.execute("INSERT OR IGNORE INTO Users Values (?,?,?,?,?,?,?,?)" , ('Test1234','TestAccount1234','TestPassword123','TestAddress123', 'TestPostcode123', "07533777040", '1' , '1' ))
-    cursor.execute("INSERT OR IGNORE INTO Users Values (?,?,?,?,?,?,?,?)" , ('Test5678','TestAccount5678','TestPassword456','TestAddress567', 'TestPostcode567', "07421749700", '1' , '1' ))
-    cursor.execute("INSERT OR IGNORE INTO Medication Values (?,?,?,?)" , ('DRUG0001','WEED','Its Weed dummy','500' ))
+    #cursor.execute("INSERT OR IGNORE INTO Users Values (?,?,?,?,?,?,?,?)" , ('Test1234','TestAccount1234','d519397a4e89a7a66d28a266ed00a679bdee93fddec9ebba7d01ff27c39c1a99','TestAddress123', 'TestPostcode123', "07533777040", '1' , '1' ))
+    #cursor.execute("INSERT OR IGNORE INTO Users Values (?,?,?,?,?,?,?,?)" , ('Test5678','TestAccount5678','1a77bb65d1d544957d895bde9602a4a42712a33335ae897a712d068fef6fb9a8','TestAddress567', 'TestPostcode567', "07421749700", '1' , '1' ))
+    cursor.execute("INSERT OR IGNORE INTO Medication Values (?,?,?,?)" , ('DRUG0001','Paracetamol','Painkiller','500' ))
     cursor.execute("INSERT OR IGNORE INTO Medication Values (?,?,?,?)" , ('DRUG0002','Asprin','Painkiller','250' ))
+<<<<<<< HEAD
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0001','11','27' ,'4'))
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0002','11','28' ,'0'))
+=======
+
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user1','DRUG0001','09','00' ))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user1','DRUG0002','09','01' ))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user2','DRUG0001','08','59' ))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?)" , ('user2','DRUG0002','09','02' ))
+
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user1','DRUG0001','10','17' ,'4'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user1','DRUG0002','10','18' ,'0'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user2','DRUG0001','08','59' ,'12'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('user2','DRUG0002','09','02' ,'43'))
+
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0001','11','11' ,'4'))
+    cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test1234','DRUG0002','11','12' ,'0'))
+>>>>>>> 24b6e3202a7c8f1f70a7fbe88373066971a31141
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0001','08','59' ,'12'))
     cursor.execute("INSERT OR IGNORE INTO Link Values (?,?,?,?,?)" , ('Test5678','DRUG0002','09','02' ,'43'))
     conn.commit()
