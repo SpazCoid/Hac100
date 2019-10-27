@@ -7,7 +7,7 @@ import schedule
 import time
 import datetime
 from clockwork import clockwork
-api = clockwork.API("363f27ed4ba0582e3aae07c8e951a88febe5dda2")
+api = clockwork.API("366aec027c364b3314327812f33da2557d51a731")
 
 def Timer():
     now=datetime.datetime.now().replace(microsecond=0)
@@ -22,30 +22,38 @@ def Timer():
         else:
             print (response.error_code)
             print (response.error_description)
-def NewsSMS(msg):
+
+            
+def NewsSMS():
+    conn=sqlite3.connect("News.db")
+    cur = conn.cursor()
+    cur.execute("SELECT Title, URL FROM News WHERE Sent = ?", [0])
+    data=cur.fetchone()
+
+    print(data)
 
     
-    message = clockwork.SMS( to ="07533777040",message = msg)
+    message = clockwork.SMS ( to = "07441906544", message = data[len(data)-1])
     response = api.send(message)
 
     if response.success:
         print (response.id)
+        data[len(data)-1].delete()
     else:
         print (response.error_code)
-        print (response.error_description)
 
 
 def NewsSearch():
     url = ('https://newsapi.org/v2/top-headlines?'
         
        
-       'q=Brexit&'
+       'q=Drugs&'
        'apiKey=009afc89be70404a83dc7b99067d3812')
     NewsReturns = requests.get(url).json()
     json_status = NewsReturns['status']
     jsonList = NewsReturns['articles']
     ListLen = len(jsonList)
-    
+    TextList = []
     if json_status == 'ok':
         i=0
         for i in range(ListLen):
@@ -61,9 +69,8 @@ def NewsSearch():
                 cur.execute("SELECT count (*) FROM News WHERE Title = ?", [jsonList[i]['title']])
                 data=cur.fetchone()
                 if data[0] ==0:
-                    Text = str(jsonList[i]['title']+ " / " + jsonList[i]['url'])
                     cursor = conn.cursor()
-                    cursor.execute("INSERT OR IGNORE INTO News Values (?,?,?,?,?)" , (jsonList[i]['title'],jsonList[i]['description'],jsonList[i]['url'],jsonList[i]['publishedAt'],jsonList[i]['content']))
+                    cursor.execute("INSERT OR IGNORE INTO News Values (?,?,?,?,?,?)" , (jsonList[i]['title'],jsonList[i]['description'],jsonList[i]['url'],jsonList[i]['publishedAt'],jsonList[i]['content'],0))
                     conn.commit()
                     #print("Article Saved") 
                     
@@ -83,16 +90,20 @@ def NewsSearch():
     return
 
 def clock():
-    starttime=time.time()
     ten=0
+    five = 0
     while True:
         Timer()
         time.sleep(1)
         ten=ten+1
+        five=five+1
         print(ten)
-        if (ten == 5):
+        if (ten == 30):
             NewsSearch()
             ten = 0
+        if (five == 15):
+            NewsSMS()
+            five = 0
 
 
 
