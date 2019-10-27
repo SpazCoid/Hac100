@@ -120,10 +120,10 @@ def AddNewAcc():
 
     user_hash = hashlib.sha256(str(user).encode()).hexdigest()
     user_id = user_hash[:8]
-    user_pwd = hashlib.sha256(str(p
+    user_pwd = hashlib.sha256(str(pwd).encode()).hexdigest()
 
 #---CREATING ACCOUNT ACCESS FRAME
-    user = user_LoggedInvar.get()wd).encode()).hexdigest()
+    user = user_LoggedInvar.get(pwd).encode().hexdigest()
 
     conn = sqlite3.connect("UserDB.db")
     cursor = conn.cursor()
@@ -133,7 +133,7 @@ def AddNewAcc():
     Login()
 
 def AccountAccessMain():
-
+    user = userID
     LoggedIn = user_LoggedInvar
     LogVar = ("Currently Logged in as:", LoggedIn)
 #---CREATING ACCOUNT ACCESS FRAME
@@ -167,6 +167,7 @@ def AccountAccessMain():
     buttn3 = Button(frameButtonAS,height=5, width=16 ,background="#7f82ff" ,text = "Log Out", command=lambda: [StartUp(), frameAccMenu.destroy(), frameButtonAS.destroy()]).grid(row=5,column=0)
 
 def MedMenu():
+    user = userID
     frameMedMenu = Frame(root)
     frameMedMenu.pack()
     frameMedMenu.configure(background="#cdfbff")
@@ -195,18 +196,24 @@ def MedMenu():
     Label(frameMedMenu, text = "Medication Dose", font=("Helvetica 15 bold"), background="#cdfbff").grid(row=6, column=0)
     MedDosevar = StringVar()
     MedDose = Entry(frameMedMenu, textvariable=MedDosevar).grid(row=6,column=1)
-
-    conn = sqlite3.connect("UserDB.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT MedID, MedicationName, MedicationDesc, MedicationDose FROM Medication where =(?)", (user,))
-    records = cursor.fetchall()
     
-       listbox1.insert(i,"Medication ID = ", record[0] , "Medication Name = ", record[1] , "Medication Description = ", record[2] , "Medication Dose = ", record[3])
-       listbox1.insert(i,"----------------------------------------------------------", "\n\n")
+    i = 1
+    conn=sqlite3.connect("UserDB.db")
+    cur = conn.cursor()
+    cur.execute("SELECT Medication.MedID, Medication.MedicationName, Medication.MedicationDesc , Medication.MedicationDose FROM Link, Medication WHERE Link.UserID = (?) AND Medication.MedID = Link.MedID", (user,))
+    records=cur.fetchall()
+    for record in records:
+
+        listbox.insert(i,"Medication ID = ", record[0] , "Medication Name = ", record[1] , "Medication Description = ", record[2] , "Medication Dose = ", record[3])
+        listbox.insert(i,"----------------------------------------------------------", "\n\n")
+ 
+    listbox = Listbox(frameMedMenu, height=8, width=80).grid(row=7,column=0)
+
+    i += 1
 
 
 def Login():
-    global User_NAMEvar, User_PASSvar, frameLogin, frameButtonL
+    global User_NAMEvar, User_PASSvar, frameLogin, frameButtonL, userID
 
 #---MAIN LOGIN FRAME
     frameLogin = Frame(root)
@@ -261,6 +268,7 @@ def LoginCheck():
     for record in records:
         if key == record[2]:
             userID = record[0]
+            MedIDvar = record[0]
             user_LoggedInvar = user
             print(userID)
             print(user_LoggedInvar)
