@@ -70,47 +70,45 @@ def NewTimer():#Sends SMS related to Perscription
                     print("responseErrorCODE" + response.error_code)
     cur.close()
 
-            
-def NewsSMS():
-    conn=sqlite3.connect("UserDB.db")
-    cur = conn.cursor()
-    cur.execute("SELECT Title FROM News WHERE Sent = ?", [0])
-    data=cur.fetchone()
-    cur.execute("SELECT PhoneNum FROM Users WHERE NotifNews = ?", [1])
-    phn=cur.fetchall()
-    phnlen = len(phn)
-    print(phn)
-    
-    for j in range(phnlen):
-        print("Sending MSG TO: " + phn[j] + ", " + data[len(data)-1])
-        data[len(data)-1].delete()
-    cur.execute('''UPDATE News SET Sent = ? WHERE Title = ?''',(1,data[len(data)-1]))
-
-    
-    message = clockwork.SMS ( to = "07441906544", message = data[len(data)-1])
-    response = api.send(message)
-
-    if response.success:
-        print (response.id)
-        data[len(data)-1].delete()
-    else:
-        print (response.error_code)
 
 def NewNewsSMS():
     conn=sqlite3.connect("UserDB.db")
     cur = conn.cursor()
     cur.execute("SELECT PhoneNum FROM Users WHERE NotifMed = ?", [1])
     phn =cur.fetchall()
-    cur.execute("SELECT Title, URL, Sent FROM News WHERE Sent = ")
-    
+    cur.execute("SELECT Title, URL, Sent FROM News WHERE Sent = ?",[0])
+    nws = cur.fetchall()
+    phnlen=len(phn)
+    nwslen=len(nws)
+    j=0
+    l=0
+    #iterate through the array of phonenumbers from the database that have opped into the service
+    for j in range(phnlen):
+        for l in range(nwslen):
+            PHONENUMBER = phn[j][0]
+            TITLE = nws[l][0]
+            URL = nws[l][1]
+            BODY = str(TITLE + " / " + URL)
+            message = clockwork.SMS(to = PHONENUMBER , message = TITLE)
+            response = api.send(message)
+            if response.success:
+                print ("responseID" + response.id)
+                cur.execute("UPDATE News SET Sent = ? WHERE URL = ?",("1",URL))
+                print("Sent")
+
+            else:
+                print("responseErrorCODE" + response.error_code)
+            conn.commit()
+    cur.close()
 
 def NewsSearch():
     url = ('https://newsapi.org/v2/top-headlines?'
         
-       
-       'q=Drugs&'
+       'category = general&'
+       'q=Manchester&'
        'apiKey=009afc89be70404a83dc7b99067d3812')
     NewsReturns = requests.get(url).json()
+    print(NewsReturns)
     json_status = NewsReturns['status']
     jsonList = NewsReturns['articles']
     ListLen = len(jsonList)
@@ -146,7 +144,7 @@ def NewsSearch():
             
             
             
-            
+           
         
     return
 
@@ -160,10 +158,10 @@ def clock():
         five=five+1
         print(ten)
         if (ten == 30):
-            #NewsSearch()
+            NewsSearch()
             ten = 0
         if (five == 15):
-            #NewsSMS()
+            NewNewsSMS()
             five = 0
 
 
